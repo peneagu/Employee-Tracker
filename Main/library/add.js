@@ -1,15 +1,13 @@
 const express = require("express");
 const inquirer = require("inquirer");
-const sql = require("mysql2");
 const util = require("util");
-
-
-
-const app = express();
+const sql = require("mysql2");
 const PORT = process.env.PORT || 3001;
+const app = express();
+
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const connection = sql.createConnection({
   host: "localhost",
@@ -20,11 +18,8 @@ const connection = sql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
-  console.log("Connected!");
-
- 
+  console.log("Connected.");
 });
-
 connection.query = util.promisify(connection.query);
 
 
@@ -35,19 +30,19 @@ addEntry = () => {
             type: "list",
             message: "What would you like to add?",
             choices: [
-                "department",
-                "employee",
-                "Position",
+                "Sector",
+                "Worker",
+                "Role",
                 "main menu"
             ]
         }
     ]).then(answer => {
-        if (answer.add === "department"){
-            addDepartment();
-        }else if (answer.add === "employee"){
-            addEmployee();
-        }else if (answer.add === "Position"){
-            addPosition();
+        if (answer.add === "Sector"){
+            addSector();
+        }else if (answer.add === "Worker"){
+            addWorker();
+        }else if (answer.add === "Role"){
+            addRole();
         }else if (answer.add === "main menu"){
             initiate();
         }else {
@@ -57,14 +52,14 @@ addEntry = () => {
   }
   
   
-  addEmployee = () => {
-    readPositions().then(Positions => {
-        const PositionChoices = Positions.map(({title: name, id: value}) => ({name, value}));
+  addWorker = () => {
+    readRoles().then(Roles => {
+        const RoleChoices = Roles.map(({title: name, id: value}) => ({name, value}));
         inquirer.prompt([
             {
                 name: "empManager",
                 type: "input",
-                message: "Who is the employee's manager? (Enter N/A if no manager)",
+                message: "Who is the Worker's manager? (Enter N/A if no manager)",
                 validate: (value) => {
                     if (value.length > 0) {
                         return true;
@@ -74,15 +69,15 @@ addEntry = () => {
                 }
             },
             {
-                name: "empPosition",
+                name: "empRole",
                 type: "list",
-                message: "What is the employee's Position?",
-                choices: PositionChoices
+                message: "What is the Worker's Role?",
+                choices: RoleChoices
             },
             {
                 name: "firstName",
                 type: "input",
-                message: "What is the employee's first name?",
+                message: "What is the Worker's first name?",
                 validate: (value) => {
                     if (value.length > 0) {
                         return true;
@@ -94,7 +89,7 @@ addEntry = () => {
             {
                 name: "lastName",
                 type: "input",
-                message: "What is the employee's last name?",
+                message: "What is the Worker's last name?",
                 validate: (value) => {
                     if (value.length > 0) {
                         return true;
@@ -106,123 +101,124 @@ addEntry = () => {
            
         ]).then(answer => {
             connection.query(
-                "INSERT INTO employee SET ? ", {
+                "INSERT INTO Worker SET ? ", {
                     first_name: answer.firstName,
                     last_name: answer.lastName,
                     manager_name: answer.empManager,
-                    Position_id: answer.empPosition
+                    Role_id: answer.empRole
                 }, (err => {
                     if (err) throw err;
                     console.log("\n");
-                    console.log(`${answer.firstName} ${answer.lastName} has been added to the employee table.`);
+                    console.log(`${answer.firstName} ${answer.lastName} has been added to the Worker table.`);
                     console.log("\n");
                     initiate();
                 }))
         })
     })
   }
-  
-  addDepartment = () => {
-    inquirer.prompt([
-        {
-            name: "department",
-            type: "input",
-            message: "What is the name of the department?",
-            validate: (value) => {
-                if (value.length > 0) {
-                    return true;
-                } else {
-                    return "Enter a valid department name.";
-                }
-            }
-        }
-    ]).then(answer => {
-      console.log(answer);
-        sequelize.query(
-            "INSERT INTO department SET ? ", {
-                department_name: answer.department
-            }, (err => {
-                if (err) throw err;
-                console.log("\n");
-                console.log(`${answer.department} has been added to the department table.`);
-                console.log("\n");
-                initiate();
-            }))
-    })  
-  }
-
-  addPosition = () => {
-    readDepartments().then(departments => {
-        const departmentChoices = departments.map(({name: name, id: value}) => ({name, value}));
+  addRole = () => {
+    readSectors().then(Sectors => {
+        const SectorChoices = Sectors.map(({name: name, id: value}) => ({name, value}));
         inquirer.prompt([
             {
                 name: "title",
                 type: "input",
-                message: "What is the Position's title?",
+                message: "Role title?",
                 validate: (value) => {
                     if (value.length > 0) {
                         return true;
                     } else {
-                        return "Enter a valid title.";
+                        return "Enter valid title.";
                     }
                 }
             },
             {
                 name: "salary",
                 type: "input",
-                message: "What is the Position's salary?",
+                message: "Role salary?",
                 validate: (value) => {
                     if (value.length > 0) {
                         return true;
                     } else {
-                        return "Enter a valid salary.";
+                        return "Enter valid salary.";
                     }
                 }
             },
             {
-                name: "department",
+                name: "Sector",
                 type: "list",
-                message: "What is the Position's department?",
-                choices: departmentChoices
+                message: "Role Sector?",
+                choices: SectorChoices
             }
         ]).then(answer => {
             connection.query(
-                "INSERT INTO Position SET ? ", {
+                "INSERT INTO Role SET ? ", {
                     title: answer.title,
                     salary: answer.salary,
-                    department_id: answer.department
+                    Sector_id: answer.Sector
                 }, (err => {
                     if (err) throw err;
                     console.log("\n");
-                    console.log(`${answer.title} has been added to the Position table.`);
+                    console.log(`${answer.title} has been added to the Role table.`);
                     console.log("\n");
                     initiate();
                 }))
         })
     })
   }
+  
+  addSector = () => {
+    inquirer.prompt([
+        {
+            name: "Sector",
+            type: "input",
+            message: "Sector?",
+            validate: (value) => {
+                if (value.length > 0) {
+                    return true;
+                } else {
+                    return "Enter valid Sector name.";
+                }
+            }
+        }
+    ]).then(answer => {
+      console.log(answer);
+        sequelize.query(
+            "INSERT INTO Sector SET ? ", {
+                Sector_name: answer.Sector
+            }, (err => {
+                if (err) throw err;
+                console.log("\n");
+                console.log(`${answer.Sector} has been added to the Sector table.`);
+                console.log("\n");
+                initiate();
+            }))
+    })  
+  }
 
-  readDepartments = () => {
+
+
+  readSectors = () => {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM department", function (err, res) {
+        connection.query("SELECT * FROM Sector", function (err, res) {
             if (err) reject(err);
             resolve(res);
         })
     })
   } 
 
-  readPositions = () => {
+  readRoles = () => {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM Position", function (err, res) {
+        connection.query("SELECT * FROM Role", function (err, res) {
             if (err) reject(err);
             resolve(res);
         })
     })
   }
   
-  readEmployees = () => {
+  readWorkers = () => {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM employee", function (err, res) {
+        connection.query("SELECT * FROM Worker", function (err, res) {
             if (err) reject(err);
             resolve(res);
         })

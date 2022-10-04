@@ -1,0 +1,32 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "- What was your motivation?\r - Why did you build this project? (Note: the answer is not \"Because it was a homework assignment.\")\r - What problem does it solve?\r - What did you learn?",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "watch": "nodemon server.js",
+    "seed": "node/seeds/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peneagu/ORM.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": 
+    {"nodemon":"^2.0.3"},
+  "bugs": {
+    "url": "https://github.com/peneagu/ORM/issues"
+  },
+  "dependencies": {
+    "dotenv" : "^8.2.0",
+    "express":"^4.17.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^6.23.2"
+    
+  },
+  "homepage": "https://github.com/peneagu/Employee-Tracker#readme"
+}

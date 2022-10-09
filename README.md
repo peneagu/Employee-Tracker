@@ -2,22 +2,17 @@
 
 ## Description
 
-- What was your motivation?
-- Why did you build this project? (Note: the answer is not "Because it was a homework assignment.")
-- What problem does it solve?
-- What did you learn?
+My motivation to build this employee tracker was to make sure my organization stays up to date in every area, especially our valued employees. 
+So in other words, i built this app to maximize employee experience and minimize company expense. The problem this solves is now we are able to keep track of who works where, makes what, and as well as regular PTO reporting and HR assistance with salary expenses. I learned how to utilize the database to update things on the backend!
 
 ## Installation
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
+In order to get the questions answered in the terminal, right click on the server.js file. Then click on "Open Terminal", After that, type in nm start in bash and go through the prompts! 
 
 ## Usage
 
-Provide instructions and examples for use. Include screenshots as needed.
+![Terminal Screenshot](./assets/Screenshot%202022-10-09%20121342.png)
 
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
 
-    ```md
-    ![alt text](assets/images/screenshot.png)
-    ```
+    
 
